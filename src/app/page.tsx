@@ -1,103 +1,215 @@
-import Image from "next/image";
+"use client";
+import { useEffect } from 'react';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  useEffect(() => {
+    const settings = {
+      topText: `neon`,
+      midText: `genesis`,
+      botText: `evangelion`,
+      epText: `EPISODE:12`,
+      titleText: `Take care of yourself.`,
+      titleStyle: `serif`,
+      titleAlign: 'right',
+      aspectRatio: `standard`
+    };
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    function config(settings: any) {
+      document.querySelectorAll('input,select,textarea').
+      forEach((el: any) => {
+        settings[el.id] = el.value || el.textContent; 
+      });
+      
+      if (settings.aspectRatio == `wide`) {
+        settings.canvasWidth = 1280;
+        settings.canvasHeight = 720;
+        settings.leftMargin = 115;
+        settings.rightBoundary = 1150;
+      } else {
+        settings.canvasWidth = 900;
+        settings.canvasHeight = 675;
+        settings.leftMargin = 75;
+        settings.rightBoundary = 815;
+      }
+      
+      settings.smHeadSize = settings.canvasHeight * 0.184;
+      settings.lgHeadSize = settings.canvasHeight * 0.308;
+      settings.epSize = settings.canvasHeight * 0.095;
+      settings.titleSize = settings.canvasHeight * 0.095;
+      settings.maxWidth = settings.rightBoundary - settings.leftMargin;
+      
+      return settings;
+    }
+
+    function draw(config: any) {
+      let can = document.getElementById('canvas') as HTMLCanvasElement,
+          ctx = can.getContext('2d')!;
+      
+      let topText = config.topText.toUpperCase(),
+          midText = config.midText.toUpperCase(),
+          botText = config.botText.toUpperCase(),
+          epText = config.epText.toUpperCase(),
+          titleText = config.titleText,
+          titleStyle = config.titleStyle,
+          titleAlign = config.titleAlign,
+          leftMargin = config.leftMargin,
+          rightBoundary = config.rightBoundary,
+          smHeadSize = config.smHeadSize,
+          lgHeadSize = config.lgHeadSize,
+          epSize = config.epSize,
+          titleSize = config.titleSize,
+          topSquash = 0.62,
+          midSquash = 0.62,
+          botSquash = 0.57,
+          epSquash = 0.76,
+          titleSquash = 0.76;
+      
+      let addText = addFittedText.bind(null, ctx, config);
+
+      can.width = config.canvasWidth;
+      can.height = config.canvasHeight;
+      ctx.clearRect(0, 0, can.width, can.height);
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.textBaseline = "top";
+      ctx.font = `900 ${smHeadSize}px Times New Roman`;
+      addText(topText, 50, topSquash);
+      addText(midText, 150, midSquash);
+      ctx.font = `900 ${lgHeadSize}px Times New Roman`;
+      addText(botText, 239, botSquash);
+
+      ctx.font = `700 ${epSize}px Helvetica Neue,Helvetica,sans-serif`;
+      addText(epText, 430, epSquash);
+      
+      titleStyle = titleStyles[titleStyle];
+      ctx.font = `${titleStyle.weight} ${titleSize}px ${titleStyle.family}`;
+      addText(titleText, 530, titleStyle.squash, titleAlign); 
+    }
+
+    const titleStyles: any = {
+      sans: {
+        weight: 800,
+        family: `Helvetica Neue,Helvetica,sans-serif`,
+        squash: 0.8
+      },
+      serif: {
+        weight: 600,
+        family: `Times New Roman,serif`,
+        squash: 0.76
+      }
+    }
+
+    function addFittedText(ctx: CanvasRenderingContext2D, config: any, text: string, y: number, squash: number = 1, align: string = 'left', maxWidth: number = 740) {
+      let x; 
+      
+      if (align == "right") {
+        ctx.textAlign = "right";
+        x = config.rightBoundary;
+      }
+      else if (align == "left") {
+        ctx.textAlign = "left";
+        x = config.leftMargin
+      }
+      else if (align == "center") {
+        ctx.textAlign = "center";
+        x = (config.rightBoundary+config.leftMargin) / 2;
+      }
+      else {x = parseInt(align)}
+      
+      let toDraw = text.split('\n');
+      if (toDraw.length > 1) {
+        ctx.textBaseline = "middle";
+      }
+      for (let n in toDraw) {
+        let mWidth = ctx.measureText('M').width;
+        let widthCalc = ctx.measureText(toDraw[n]).width;
+        if (widthCalc * squash >= maxWidth) {
+          widthCalc = maxWidth;
+        } else {
+          widthCalc = widthCalc * squash;
+        }
+        ctx.fillText(toDraw[n], x, y+(parseInt(n)*mWidth), widthCalc);
+      }
+
+      ctx.textBaseline = "top";
+      ctx.textAlign = "left";
+    }
+
+    (window as any).config = config;
+    (window as any).draw = draw;
+    (window as any).settings = settings;
+
+    draw(config(settings));
+  }, []);
+
+  return (
+    <>
+      <style jsx>{`
+        body {
+          font-family: Helvetica Neue, Helvetica, sans-serif;
+          color: white;
+          background-color: #111111;
+        }
+
+        input, textarea, select, button {
+          font-weight: bold;
+          color:white;
+          background-color: black;
+        }
+
+        #input-container {
+          padding-top: 1em;
+          color: black;
+          background-color: red;
+          display: block;
+          width: 900px;
+          height: 7.5em;
+        }
+
+        #main-fields {
+          display: inline-block;
+          float: left;
+          clear: all;
+          padding-right:3em;
+        }
+
+        #title-fields {
+          clear:all;
+          float:left;
+        }
+
+        label {
+          font-weight: bold;
+          display: inline-block;
+          width: 7em;
+          vertical-align: top;
+          padding-bottom:0.3em;
+        }
+
+        textarea {
+          display: inline-block;
+          width: 22em;
+        }
+
+        #generate {
+          padding: 1em 2em;
+          margin: 5em 1em 1em 1em;
+          color: white;
+          display:block;
+          float:right;
+        }
+      `}</style>
+      <div 
+        className="font-sans flex items-start justify-center min-h-screen bg-no-repeat pt-[20vh]"
+        style={{ 
+          backgroundImage: 'url(/bg.jpg)', 
+          backgroundSize: 'auto 100%',
+          backgroundPosition: 'center center'
+        }}
+      >
+        <canvas id="canvas" width="900" height="675" style={{ width: '100%', height: 'auto' }}></canvas>
+      </div>
+    </>
   );
 }
