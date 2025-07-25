@@ -2,17 +2,18 @@
 import { useEffect } from 'react';
 
 export default function Home() {
+  const settings = {
+    topText: `neon`,
+    midText: `genesis`,
+    botText: `evangelion`,
+    epText: `EPISODE:12`,
+    titleText: `Take care of yourself.`,
+    titleStyle: `serif`,
+    titleAlign: 'right',
+    aspectRatio: `standard`
+  };
+
   useEffect(() => {
-    const settings = {
-      topText: `neon`,
-      midText: `genesis`,
-      botText: `evangelion`,
-      epText: `EPISODE:12`,
-      titleText: `Take care of yourself.`,
-      titleStyle: `serif`,
-      titleAlign: 'right',
-      aspectRatio: `standard`
-    };
 
     function config(settings: any) {
       document.querySelectorAll('input,select,textarea').
@@ -141,7 +142,7 @@ export default function Home() {
     (window as any).settings = settings;
 
     draw(config(settings));
-  }, []);
+  }, [settings.topText, settings.midText, settings.botText, settings.epText, settings.titleText]);
 
   return (
     <>
